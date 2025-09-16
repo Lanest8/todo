@@ -23,6 +23,7 @@ public class TodoService {
     }
 
     public Todo createTodo(Todo todo) {
+        todo.setId(null);
         return todoRepository.save(todo);
     }
 
