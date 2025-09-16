@@ -39,4 +39,14 @@ public class TodoService {
         todo.setDone(updateTodo.isDone());
         return todoRepository.save(todo);
     }
+
+    public Todo deleteTodo(String id) {
+        Optional<Todo> todoOptional = todoRepository.findById(id);
+        if (todoOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "todo not found with id: " + id);
+        }
+        Todo todo = todoOptional.get();
+        todoRepository.delete(todo);
+        return todo;
+    }
 }

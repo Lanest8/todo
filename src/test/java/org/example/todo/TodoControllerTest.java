@@ -206,4 +206,16 @@ public class TodoControllerTest {
                 .andExpect(status().isUnprocessableEntity());
     }
 
+    @Test
+    void should_response_204_when_delete_existing_todo() throws Exception {
+        Todo existingTodo = new Todo("123", "Buy milk", false);
+        todoRepository.save(existingTodo);
+
+        MockHttpServletRequestBuilder request = delete("/todos/123")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isNoContent());
+    }
+
 }
