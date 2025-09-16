@@ -1,4 +1,4 @@
-package org.example.todo;
+package org.example.todo.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
