@@ -21,6 +21,8 @@ public class Todo {
 
     @PrePersist
     public void ensureId() {
-        this.id = UUID.randomUUID().toString();
+        if (this.id == null) {
+            this.id = UUID.randomUUID().toString();
+        }
     }
 }
