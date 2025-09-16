@@ -148,5 +148,29 @@ public class TodoControllerTest {
                 .andExpect(jsonPath("$.done").value(true));
     }
 
+    @Test
+    void should_response_200_when_update_todo_with_surplus_id() throws Exception {
+        Todo todo123 = new Todo("123", "Buy milk", false);
+        Todo todo456 = new Todo("456", "Buy bread", false);
+        todoRepository.save(todo123);
+        todoRepository.save(todo456);
+
+        String requestBody = """
+                {
+                    "id": "456",
+                    "text": "Buy snacks",
+                    "done": true
+                }
+                """;
+        MockHttpServletRequestBuilder request = put("/todos/123")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("123"))
+                .andExpect(jsonPath("$.text").value("Buy snacks"))
+                .andExpect(jsonPath("$.done").value(true));
+    }
 
 }
