@@ -13,8 +13,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -225,6 +224,17 @@ public class TodoControllerTest {
 
         mockMvc.perform(request)
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_allow_cors() throws Exception {
+        MockHttpServletRequestBuilder request = get("/todos")
+                .header("Access-Control-Request-Method", "GET", "POST", "PUT", "DELETE")
+                .header("Origin", "http://localhost:3000");
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", "*"));
     }
 
 }
