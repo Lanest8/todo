@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -42,7 +43,7 @@ public class TodoControllerTest {
     }
 
     @Test
-    void should_response_empty_list_when_index_with_one_todo() throws Exception {
+    void should_response_list_when_index_with_one_todo() throws Exception {
         Todo todo = new Todo(null, "Buy milk", false);
         todoRepository.save(todo);
         MockHttpServletRequestBuilder request = get("/todos")
@@ -105,4 +106,25 @@ public class TodoControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isUnprocessableEntity());
     }
+
+    @Test
+    void should_ignore_client_sent_id_when_create_todo() throws Exception {
+        String requestBody = """
+                {
+                    "id": "client-sent",
+                    "text": "Buy bread",
+                    "done": false
+                }
+                """;
+        MockHttpServletRequestBuilder request = post("/todos")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody);
+
+        mockMvc.perform(request)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(not("client-sent")))
+                .andExpect(jsonPath("$.text").value("Buy bread"))
+                .andExpect(jsonPath("$.done").value(false));
+    }
+
 }
