@@ -189,4 +189,21 @@ public class TodoControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void should_response_422_when_update_todo_with_empty_object() throws Exception {
+        Todo existingTodo = new Todo("123", "Buy milk", false);
+        todoRepository.save(existingTodo);
+
+        String requestBody = """
+                {
+                }
+                """;
+        MockHttpServletRequestBuilder request = put("/todos/123")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody);
+
+        mockMvc.perform(request)
+                .andExpect(status().isUnprocessableEntity());
+    }
+
 }
