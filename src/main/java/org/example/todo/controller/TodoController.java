@@ -1,11 +1,9 @@
 package org.example.todo.controller;
 
-import org.example.todo.repository.TodoRepository;
 import org.example.todo.entity.Todo;
 import org.example.todo.service.TodoService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,5 +20,11 @@ public class TodoController {
     @GetMapping
     public List<Todo> index() {
         return todoService.index();
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Todo createTodo(@RequestBody Todo todo) {
+        return todoService.createTodo(todo);
     }
 }
