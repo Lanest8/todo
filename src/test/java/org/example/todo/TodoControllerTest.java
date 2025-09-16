@@ -60,7 +60,6 @@ public class TodoControllerTest {
     void should_response_201_when_create_todo() throws Exception {
         String requestBody = """
                 {
-                    "id": null,
                     "text": "Buy milk",
                     "done": false
                 }
@@ -80,8 +79,22 @@ public class TodoControllerTest {
     void should_response_422_when_create_todo_with_empty_text() throws Exception {
         String requestBody = """
                 {
-                    "id": null,
                     "text": "",
+                    "done": false
+                }
+                """;
+        MockHttpServletRequestBuilder request = post("/todos")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody);
+
+        mockMvc.perform(request)
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void should_response_422_when_create_todo_with_missing_text() throws Exception {
+        String requestBody = """
+                {
                     "done": false
                 }
                 """;
